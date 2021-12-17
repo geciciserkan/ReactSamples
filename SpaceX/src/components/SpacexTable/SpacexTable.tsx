@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DataGrid,
   GridToolbarDensitySelector,
   GridToolbarFilterButton,
   GridColDef,
+  GridRenderCellParams,
 } from "@mui/x-data-grid";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -11,7 +12,13 @@ import ClearIcon from "@material-ui/icons/Clear";
 import SearchIcon from "@material-ui/icons/Search";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
-import useAxios from "axios-hooks";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getLaunches,
+  setSelectedLaunch,
+} from "../../store/actions/launches.actions";
+import { Button, CardMedia, Modal, Typography } from "@mui/material";
+import "./styles.css";
 
 function escapeRegExp(value: any) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
@@ -80,57 +87,89 @@ interface Props {
   dataTestid?: string;
 }
 
-export const SpacexTable = ({
-  dataTestid = "provision-data-test-id",
-}: Props) => {
-  // get most recent 50 launches from SpaceX API.
-  const [{ data, loading, error }] = useAxios(
-    "https://api.spacexdata.com/v3/launches/past?sort=flight_number&order=desc&limit=50"
+const SpacexTable = ({ dataTestid = "provision-data-test-id" }: Props) => {
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [searchText, setSearchText] = useState("");
+
+  const dispatch = useDispatch();
+  const { isLoading, launches, errorMessage, selected } = useSelector(
+    (state: any) => state.launches
   );
 
-  //parse the launch_date_local string into a date object.
-  const parseDateString = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-  };
+  useEffect(() => {
+    dispatch(getLaunches());
+  }, []);
 
-  const tableRows = data?.map((item: any) => ({
-    id: item.flight_number,
-    launch_name: item.mission_name,
-    launch_date_local: parseDateString(item.launch_date_local),
-    rocket_details: item.rocket.rocket_name || "Launch details not available",
-  }));
-  const [searchText, setSearchText] = useState("");
-  const [rows, setRows] = useState(tableRows);
-  const [filteredRows, setFilteredRows] = useState(null);
+  useEffect(() => {
+    if (launches && launches.length > 0) {
+      setFilteredRows(launches);
+    }
+  }, [launches]);
+
+  const columns: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "Flight ID",
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+    },
+    {
+      field: "launch_name",
+      headerName: "Launch Name",
+      width: 300,
+      disableColumnMenu: true,
+    },
+    {
+      field: "launch_date_local",
+      headerName: "Launch Date",
+      width: 150,
+      type: "date",
+      disableColumnMenu: true,
+    },
+    {
+      field: "rocket_details",
+      headerName: "Rocket Details",
+      width: 150,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: (params: GridRenderCellParams) => {
+        return (
+          <Button
+            onClick={() => dispatch(setSelectedLaunch(params.row.full_details))}
+          >
+            Click to View
+          </Button>
+        );
+      },
+    },
+  ];
 
   const requestSearch = (searchValue: React.SetStateAction<string>) => {
     setSearchText(searchValue);
-    //filter the table rows based on the search text.
-    const filteredRows = tableRows.filter((row: any) => {
+    const filteredBySearch = launches.filter((row: any) => {
       const regex = new RegExp(escapeRegExp(searchValue), "gi");
       return regex.test(row.launch_name);
     });
-    setFilteredRows(filteredRows);
+    setFilteredRows(filteredBySearch);
   };
 
-  const columns: GridColDef[] = [
-    { field: "id", headerName: "Flight ID" },
-    { field: "launch_name", headerName: "Launch Name", width: 300 },
-    { field: "launch_date_local", headerName: "Launch Date", width: 150 },
-    { field: "rocket_details", headerName: "Rocket Details", width: 150 },
-  ];
+  const handleCloseModal = () => {
+    dispatch(setSelectedLaunch(null));
+  };
+
   return (
     <div
       data-testid={dataTestid}
+      className="ag-theme-alpine"
       style={{
         height: 500,
         width: "40%",
       }}
     >
       <DataGrid
-        disableVirtualization
-        rows={tableRows}
+        rows={filteredRows}
         columns={columns}
         components={{ Toolbar: QuickSearchToolbar }}
         componentsProps={{
@@ -142,7 +181,31 @@ export const SpacexTable = ({
             clearSearch: () => requestSearch(""),
           },
         }}
+        loading={isLoading}
       />
+      <Modal
+        open={selected || false}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box className="modal-container">
+          <Typography id="modal-modal-title" variant="h5" component="h2">
+            {selected?.mission_name}{" "}
+            {selected?.launch_year && `(${selected?.launch_year})`}
+          </Typography>
+          <CardMedia
+            component="img"
+            image={selected?.links.mission_patch_small}
+            alt={selected?.mission_name}
+          />
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {selected?.details}
+          </Typography>
+        </Box>
+      </Modal>
     </div>
   );
 };
+
+export default SpacexTable;

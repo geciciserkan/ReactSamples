@@ -1,46 +1,79 @@
-# Getting Started with Create React App
+<h3 align="center">React SpaceX Data Table</h3>
+  
+<!-- TABLE OF CONTENTS -->
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Table of Contents
 
-## Available Scripts
+- [About the Project](#about-the-project)
+  - [Built With](#built-with)
+- [Screenshots](#screenshots)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
 
-In the project directory, you can run:
+## About The Project
 
-### `npm start`
+A functional data table about spacex launches.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Built With
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- [React](https://reactjs.org)
+- [Material-UI](https://mui.com/)
+- [Redux](https://redux.js.org/)
+- [Redux-Thunk](https://redux.js.org/usage/writing-logic-thunks)
 
-### `npm test`
+## Screenshots
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Main Table
 
-### `npm run build`
+![Main Table](https://i.ibb.co/QQQ0y5N/Main.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Sort by Name
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+![Sort Name](https://i.ibb.co/jHgqmrv/Sort.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Sort by Date
 
-### `npm run eject`
+![Cart Image](https://i.ibb.co/yNYvsDq/Sort2.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Search by Name
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![Search Name](https://i.ibb.co/YZ7DsW2/Search.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Rocket Details
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+![Search Name](https://i.ibb.co/Wny9FTD/Rocket-Details2.png)
 
-## Learn More
+### Rocket Details Extra
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+![Search Name](https://i.ibb.co/D9jDvR0/Rocket-Details.png)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Getting Started
+
+### Prerequisites
+
+- React version 16.13.1 
+
+### Installation
+
+1. Clone the repo and change the directory
+
+2. Install NPM packages
+
+```sh
+npm install
+```
+3. Run in development mode
+
+```sh
+npm start
+```
+
+
+
+
+
+
+
+
+
+

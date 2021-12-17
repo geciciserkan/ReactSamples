@@ -1,0 +1,3 @@
+export const GET_LAUNCHES = "GET_LAUNCHES";
+export const LAUNCHES_ERROR = "LAUNCHES_ERROR";
+export const SELECT_LAUNCH = "SELECT_LAUNCH";
